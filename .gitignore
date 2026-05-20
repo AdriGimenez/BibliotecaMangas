@@ -1,0 +1,33 @@
+# Build results
+bin/
+obj/
+
+# Visual Studio
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# Test results and coverage
+TestResults/
+coverage/
+*.coverage
+*.coveragexml
+
+# NuGet
+*.nupkg
+packages/
+
+# Local configuration and secrets
+**/appsettings.Development.json
+**/appsettings.Local.json
+**/.env
+
+# OS files
+Thumbs.db
+Desktop.ini
