@@ -1,23 +1,23 @@
 # BibliotecaMangas
 
-BibliotecaMangas es una API en .NET para llevar el control personal de una coleccion de mangas.
+BibliotecaMangas es una API en .NET para administrar una coleccion personal de mangas.
 
-La idea nace de un problema cotidiano: al salir a comprar mangas, es facil olvidarse que tomos ya estan en la biblioteca y terminar revisando fotos del celular para no repetir compras. Este proyecto busca resolver eso con una base de datos consultable y actualizable, donde se puedan registrar obras, autores, editoriales y tomos comprados.
+El proyecto nace de una situacion muy concreta: al salir a comprar mangas, es facil olvidarse que tomos ya estan en la biblioteca y terminar revisando fotos del celular para evitar compras repetidas. La solucion busca centralizar esa informacion en una base de datos, permitiendo consultar obras y tomos disponibles, registrar nuevas compras y mantener la coleccion actualizada.
 
-En una siguiente etapa, el proyecto apunta a incorporar scraping de novedades editoriales y notificaciones cuando salgan nuevos tomos.
+La primera etapa esta enfocada en construir una base solida para la API y el acceso a datos. Mas adelante, la idea es escalar el proyecto con una interfaz visual, scraping de novedades editoriales y notificaciones cuando se anuncien nuevos tomos.
 
-## Estado actual
+## Alcance actual
 
-Actualmente la solucion incluye:
+La solucion incluye:
 
-- API backend con ASP.NET Core.
-- Acceso a datos con Entity Framework Core.
-- Base de datos MySQL.
-- Separacion en proyectos para modelos, interfaces, datos y API.
-- Endpoints iniciales para consultar autores, editoriales, obras y tomos.
-- Swagger habilitado en entorno de desarrollo.
+- API backend desarrollada con ASP.NET Core.
+- Persistencia en MySQL mediante Entity Framework Core.
+- Separacion por capas para modelos, contratos, acceso a datos y API.
+- Repositorios para autores, editoriales, obras y tomos.
+- Endpoints iniciales de consulta.
+- Swagger disponible en entorno de desarrollo.
 
-## Tecnologias
+## Stack tecnico
 
 - .NET 8
 - ASP.NET Core Web API
@@ -26,7 +26,7 @@ Actualmente la solucion incluye:
 - MySQL
 - Swagger / Swashbuckle
 
-## Estructura de la solucion
+## Arquitectura
 
 ```text
 BibliotecaMangas/
@@ -43,6 +43,13 @@ BibliotecaMangas/
 |   +-- API ASP.NET Core
 +-- BibliotecaMangas.sln
 ```
+
+La solucion esta separada en proyectos para mantener responsabilidades claras:
+
+- `BibliotecaMangas.Abstractions.Models`: DTOs compartidos por la API y los repositorios.
+- `BibliotecaMangas.Abstractions.Interfaces`: contratos de repositorio.
+- `BibliotecaMangas.Data`: entidades, `DbContext` e implementaciones de acceso a datos.
+- `BibliotecaMangas.Backend`: API ASP.NET Core y configuracion de servicios.
 
 ## Modelo de dominio
 
@@ -66,18 +73,18 @@ DTOs actuales:
 ```csharp
 public class AutorDTO
 {
-    public string Nombre { get; set; }
+    public string Nombre { get; set; } = null!;
 }
 
 public class EditorialDTO
 {
-    public string Nombre { get; set; }
-    public string Pais { get; set; }
+    public string Nombre { get; set; } = null!;
+    public string Pais { get; set; } = null!;
 }
 
 public class ObraDTO
 {
-    public string Titulo { get; set; }
+    public string Titulo { get; set; } = null!;
     public int? AutorId { get; set; }
     public int? EditorialId { get; set; }
 }
@@ -89,17 +96,11 @@ public class TomoDTO
 }
 ```
 
-## Requisitos
+## Configuracion
 
-Para ejecutar el proyecto localmente se necesita:
+El proyecto utiliza una cadena de conexion llamada `CONNECTIONSTRING`.
 
-- .NET SDK 8 o superior.
-- MySQL disponible localmente o en Docker.
-- Visual Studio 2022, Rider, VS Code o una terminal con `dotnet`.
-
-## Configuracion local
-
-El archivo `appsettings.json` contiene una cadena de conexion de ejemplo. Para desarrollo local, crear o modificar:
+Para desarrollo local, la configuracion sensible debe ir en:
 
 ```text
 BibliotecaMangas.Backend/appsettings.Development.json
@@ -121,33 +122,7 @@ Ejemplo:
 }
 ```
 
-> `appsettings.Development.json` esta ignorado por Git para evitar subir credenciales reales al repositorio.
-
-## Ejecutar el proyecto
-
-Restaurar dependencias:
-
-```powershell
-dotnet restore BibliotecaMangas.sln
-```
-
-Compilar la solucion:
-
-```powershell
-dotnet build BibliotecaMangas.sln
-```
-
-Ejecutar la API:
-
-```powershell
-dotnet run --project BibliotecaMangas.Backend
-```
-
-Luego abrir Swagger:
-
-```text
-http://localhost:5192/swagger
-```
+`appsettings.Development.json` esta ignorado por Git para evitar subir credenciales reales al repositorio.
 
 ## Endpoints iniciales
 
@@ -170,7 +145,7 @@ Task<bool> Update(int id, T item);
 Task<bool> Delete(int id);
 ```
 
-## Proximos pasos
+## Roadmap
 
 - Completar endpoints CRUD para autores, editoriales, obras y tomos.
 - Agregar busqueda rapida por titulo de obra.
@@ -180,7 +155,7 @@ Task<bool> Delete(int id);
 - Agregar notificaciones cuando se anuncien nuevos tomos.
 - Sumar autenticacion si el proyecto pasa a usarse por mas de una persona.
 
-## Objetivo del proyecto
+## Objetivo
 
 El objetivo principal es tener una herramienta simple y confiable para responder rapidamente:
 
