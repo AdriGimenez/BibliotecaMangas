@@ -1,32 +1,29 @@
 # BibliotecaMangas
 
+Repositorio: https://github.com/AdriGimenez/BibliotecaMangas
+
 BibliotecaMangas es una API en .NET para administrar una coleccion personal de mangas.
 
 El proyecto nace de una situacion muy concreta: al salir a comprar mangas, es facil olvidarse que tomos ya estan en la biblioteca y terminar revisando fotos del celular para evitar compras repetidas. La solucion busca centralizar esa informacion en una base de datos, permitiendo consultar obras y tomos disponibles, registrar nuevas compras y mantener la coleccion actualizada.
 
-La primera etapa esta enfocada en construir una base solida para la API y el acceso a datos. Mas adelante, la idea es escalar el proyecto con una interfaz visual, scraping de novedades editoriales y notificaciones cuando se anuncien nuevos tomos.
+## Descripcion
 
-## Alcance actual
+La aplicacion permite administrar informacion relacionada con una biblioteca de mangas. Actualmente incluye entidades como autores, editoriales, obras y tomos.
 
-La solucion incluye:
+El sistema esta desarrollado como una API REST utilizando ASP.NET Core y MySQL como base de datos.
 
-- API backend desarrollada con ASP.NET Core.
-- Persistencia en MySQL mediante Entity Framework Core.
-- Separacion por capas para modelos, contratos, acceso a datos y API.
-- Repositorios para autores, editoriales, obras y tomos.
-- Endpoints iniciales de consulta.
-- Swagger disponible en entorno de desarrollo.
-
-## Stack tecnico
+## Tecnologias utilizadas
 
 - .NET 8
 - ASP.NET Core Web API
 - Entity Framework Core
 - Pomelo EntityFrameworkCore MySQL
 - MySQL
-- Swagger / Swashbuckle
+- Swagger
+- Git
+- Docker
 
-## Arquitectura
+## Arquitectura del proyecto
 
 ```text
 BibliotecaMangas/
@@ -44,21 +41,14 @@ BibliotecaMangas/
 +-- BibliotecaMangas.sln
 ```
 
-La solucion esta separada en proyectos para mantener responsabilidades claras:
-
-- `BibliotecaMangas.Abstractions.Models`: DTOs compartidos por la API y los repositorios.
-- `BibliotecaMangas.Abstractions.Interfaces`: contratos de repositorio.
-- `BibliotecaMangas.Data`: entidades, `DbContext` e implementaciones de acceso a datos.
-- `BibliotecaMangas.Backend`: API ASP.NET Core y configuracion de servicios.
-
 ## Modelo de dominio
 
 El sistema se organiza alrededor de cuatro conceptos principales:
 
-- `Autor`: persona autora de una obra.
-- `Editorial`: editorial que publica una obra.
-- `Obra`: serie o titulo de manga.
-- `Tomo`: volumen individual asociado a una obra.
+- Autor
+- Editorial
+- Obra
+- Tomo
 
 Relaciones principales:
 
@@ -68,39 +58,54 @@ Editorial 1 ---- * Obras
 Obra 1 ---- * Tomos
 ```
 
-DTOs actuales:
+## Endpoints principales
 
-```csharp
-public class AutorDTO
-{
-    public string Nombre { get; set; } = null!;
-}
+Algunos endpoints disponibles son:
 
-public class EditorialDTO
-{
-    public string Nombre { get; set; } = null!;
-    public string Pais { get; set; } = null!;
-}
+```text
+GET /api/Autores/getAllAutores
+GET /api/Editoriales/getAllAutores
+GET /api/Obras/getAllObras
+GET /api/Tomos/getAllTomos
+```
 
-public class ObraDTO
-{
-    public string Titulo { get; set; } = null!;
-    public int? AutorId { get; set; }
-    public int? EditorialId { get; set; }
-}
+Tambien se implementan operaciones para consultar, guardar, actualizar y eliminar datos desde los repositorios.
 
-public class TomoDTO
-{
-    public int? ObraId { get; set; }
-    public int? NumeroTomo { get; set; }
-}
+## Requisitos previos
+
+Para ejecutar el proyecto se necesita tener instalado:
+
+- Git
+- Docker Desktop
+- .NET 8 SDK
+- MySQL
+
+## Instalacion local
+
+Clonar el repositorio:
+
+```powershell
+git clone https://github.com/AdriGimenez/BibliotecaMangas.git
+cd BibliotecaMangas
+```
+
+Restaurar dependencias del proyecto:
+
+```powershell
+dotnet restore
+```
+
+Compilar la solucion:
+
+```powershell
+dotnet build
 ```
 
 ## Configuracion
 
 El proyecto utiliza una cadena de conexion llamada `CONNECTIONSTRING`.
 
-Para desarrollo local, la configuracion sensible debe ir en:
+Para desarrollo local, la configuracion sensible puede ir en:
 
 ```text
 BibliotecaMangas.Backend/appsettings.Development.json
@@ -110,40 +115,105 @@ Ejemplo:
 
 ```json
 {
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information",
-      "Microsoft.AspNetCore": "Warning"
-    }
-  },
   "ConnectionStrings": {
     "CONNECTIONSTRING": "Server=localhost; Port=3306; Database=BibliotecaMangas; User=root; Password=tu_password; TreatTinyAsBoolean=True"
   }
 }
 ```
 
-`appsettings.Development.json` esta ignorado por Git para evitar subir credenciales reales al repositorio.
+El archivo `appsettings.Development.json` esta ignorado por Git para evitar subir credenciales reales al repositorio.
 
-## Endpoints iniciales
+## Dockerizacion
 
-Los endpoints disponibles actualmente son:
+El proyecto incluye un archivo `Dockerfile` ubicado en:
 
 ```text
-GET /api/Autores/getAllAutores
-GET /api/Editoriales/getAllAutores
-GET /api/Obras/getAllObras
-GET /api/Tomos/getAllTomos
+BibliotecaMangas.Backend/Dockerfile
 ```
 
-Las interfaces de repositorio ya contemplan operaciones de lectura, guardado, actualizacion y borrado:
+La imagen base utilizada es la imagen oficial de .NET 8:
 
-```csharp
-Task<List<T>> GetAll();
-Task<T?> GetById(int id);
-Task<bool> Save(T item);
-Task<bool> Update(int id, T item);
-Task<bool> Delete(int id);
+```text
+mcr.microsoft.com/dotnet/aspnet:8.0
+mcr.microsoft.com/dotnet/sdk:8.0
 ```
+
+## Construccion de la imagen Docker
+
+Desde la carpeta raiz del proyecto, ejecutar:
+
+```powershell
+docker build -f BibliotecaMangas.Backend/Dockerfile -t bibliotecamangas-backend:tp1 .
+```
+
+Este comando construye una imagen personalizada llamada:
+
+```text
+bibliotecamangas-backend:tp1
+```
+
+## Ejecucion del contenedor
+
+Primero iniciar el contenedor de MySQL:
+
+```powershell
+docker start mysql-BibliotecaMangas
+```
+
+Luego ejecutar el backend dentro de Docker:
+
+```powershell
+docker run --rm -d --name BibliotecaMangas.Backend.TP1 -p 8088:8080 -e ASPNETCORE_ENVIRONMENT=Development -e ASPNETCORE_URLS=http://+:8080 -e ConnectionStrings__CONNECTIONSTRING="Server=host.docker.internal; Port=3308; Database=BibliotecaMangas; User=root; Password=tu_password; TreatTinyAsBoolean=True" bibliotecamangas-backend:tp1
+```
+
+Importante: reemplazar `tu_password` por la contrasena correspondiente de MySQL en el entorno local.
+
+## Verificacion de funcionamiento
+
+Abrir Swagger en el navegador:
+
+```text
+http://localhost:8088/swagger/index.html
+```
+
+Endpoint de prueba:
+
+```text
+http://localhost:8088/api/Autores/getAllAutores
+```
+
+Si la API responde correctamente, significa que la aplicacion esta funcionando dentro del contenedor Docker.
+
+## Comandos Git utilizados
+
+Inicializacion y versionado del proyecto:
+
+```powershell
+git init
+git add .
+git commit -m "Estado estable inicial"
+git commit -m "Agregar README del proyecto"
+git commit -m "Documentar ejecucion con Docker"
+```
+
+Publicacion en GitHub:
+
+```powershell
+git remote add origin https://github.com/AdriGimenez/BibliotecaMangas.git
+git push origin main
+```
+
+## Entregables del TP
+
+Este proyecto incluye:
+
+- Codigo fuente completo.
+- Repositorio publicado en GitHub.
+- Dockerfile funcional.
+- README documentado.
+- Imagen Docker construida localmente.
+- Contenedor ejecutado correctamente.
+- API verificada mediante Swagger y endpoints de prueba.
 
 ## Roadmap
 
