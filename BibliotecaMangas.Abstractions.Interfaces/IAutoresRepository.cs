@@ -12,7 +12,7 @@ namespace BibliotecaMangas.Abstractions.Interfaces
     {
         Task<List<AutorDTO>> GetAll();
         Task<AutorDTO?> GetById(int id);
-        Task<bool> Save(AutorDTO autor);
+        Task<bool> Create(AutorDTO autor);
         Task<bool> Update(int id, AutorDTO autor);
         Task<bool> Delete(int id);
     }

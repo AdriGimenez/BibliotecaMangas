@@ -10,6 +10,7 @@ public partial class Tomos
     public int? ObraId { get; set; }
 
     public int NumeroTomo { get; set; }
+    public bool IsDeleted { get; set; }
 
     public virtual Obras? Obra { get; set; }
 }

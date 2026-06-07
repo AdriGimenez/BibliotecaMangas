@@ -12,7 +12,7 @@ namespace BibliotecaMangas.Abstractions.Interfaces
     {
         Task<List<EditorialDTO>> GetAll();
         Task<EditorialDTO?> GetById(int id);
-        Task<bool> Save(EditorialDTO editorial);
+        Task<bool> Create(EditorialDTO editorial);
         Task<bool> Update(int id, EditorialDTO editorial);
         Task<bool> Delete(int id);
     }

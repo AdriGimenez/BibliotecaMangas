@@ -12,6 +12,7 @@ namespace BibliotecaMangas.Abstractions.Interfaces
     {
         Task<List<ObraDTO>> GetAll();
         Task<ObraDTO?> GetById(int id);
+        Task<ObraDetalleDTO?> GetDetalleById(int id);
         Task<bool> Save(ObraDTO obra);
         Task<bool> Update(int id, ObraDTO obra);
         Task<bool> Delete(int id);
