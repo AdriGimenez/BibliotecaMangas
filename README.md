@@ -1,14 +1,14 @@
 # BibliotecaMangas - API para Biblioteca Personal de Mangas
 
-BibliotecaMangas es una API en .NET para administrar una coleccion personal de mangas.
+BibliotecaMangas es una API en .NET para administrar una colección personal de mangas.
 
 El proyecto permite registrar y consultar información sobre autores, editoriales, obras y tomos, con el objetivo de tener una biblioteca organizada y evitar comprar tomos repetidos.
 
 Repositorio: https://github.com/AdriGimenez/BibliotecaMangas
 
-## Descripcion
+## Descripción
 
-BibliotecaMangas nace de una situación concreta: al salir a comprar mangas, muchas veces es dificil recordar qué tomos ya están en la biblioteca personal.
+BibliotecaMangas nace de una situación concreta: al salir a comprar mangas, muchas veces es difícil recordar qué tomos ya están en la biblioteca personal.
 
 La aplicación busca centralizar esa información en una base de datos para poder consultar rápidamente:
 
@@ -21,7 +21,7 @@ El sistema está desarrollado como una API REST utilizando ASP.NET Core y MySQL.
 
 ---
 
-## Tecnologias utilizadas
+## Tecnologías utilizadas
 
 |Tecnología|Uso|
 |----------|-----|
@@ -42,7 +42,7 @@ El sistema está desarrollado como una API REST utilizando ASP.NET Core y MySQL.
 
 * API REST para administrar una biblioteca de mangas.
 * Gestión de autores, editoriales, obras y tomos.
-* Base de datos MySQL inicializada mediante Swagger.
+* Base de datos MySQL inicializada automáticamente mediante Docker Compose y script SQL.
 * Documentación de endpoints mediante Swagger.
 * Backend dockerizado con Dockerfile.
 * Ejecución completa mediante Docker Compose.
@@ -78,8 +78,9 @@ BibliotecaMangas/
 ├── BibliotecaMangas.Backend/
 |   └── API ASP.NET Core
 ├── mysql-init/
-|   └──Script SQL inicial para crear y cargar la base de datos
+|   └── Script SQL inicial para crear y cargar la base de datos
 ├── docs/
+|   └── evidencias/
 ├── docker-compose.yml
 ├── BibliotecaMangas.sln
 └── README.md
@@ -117,7 +118,7 @@ GET /api/Obras/getAllObras
 GET /api/Tomos/getAllTomos
 ```
 
-Tambien se implementan operaciones para consultar, guardar, actualizar y eliminar datos desde los repositorios.
+También se implementan operaciones para consultar, guardar, actualizar y eliminar datos desde los repositorios.
 
 ---
 
@@ -137,7 +138,7 @@ docker compose up --build
 ```
 
 Este comando:
-* construye la imagen backend;
+* construye la imagen del backend;
 * descarga la imagen de MySQL si no existe localmente;
 * crea el contenedor de MySQL;
 * crea la base de datos ```BibliotecaMangas```;
@@ -172,7 +173,7 @@ docker compose down
 Si se desea borrar el volumen de MySQL y volver a cargar el script inicial:
 ```text
 docker compose down -v
-docjer compose up --build
+docker compose up --build
 ```
 
 El parámetro ```-v``` elimina el volumen de MySQL. Al ejecutar nuevamente Docker Compose, la base de datos vuelve a crearse desde el archivo:
@@ -188,7 +189,7 @@ También se puede construir la imagen Docker del backend manualmente.
 
 Desde la carpeta raíz del proyecto:
 ```text
-docker build -f BibliotecaMangas.Backend/Dockerfile -t bibliotecamangas-backend:tp .
+docker build -f BibliotecaMangas.Backend/Dockerfile -t bibliotecamangas-backend:tp1 .
 ```
 
 Este comando crea la imagen:
@@ -213,7 +214,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0
 FROM mcr.microsoft.com/dotnet/sdk:8.0
 ```
 
-El proceso se realiza las siguientes acciones:
+El proceso realiza las siguientes acciones:
 * restaura las dependencias del proyecto;
 * compila el backend;
 * publica la aplicación;
@@ -264,31 +265,31 @@ Tablas incluidas:
 
 ## Capturas de Pantalla
 ### Repositorio en GitHub
-[Repositorio](docs/evidencias/Github.jpg)
+![Repositorio](docs/evidencias/Github.jpg)
 
 ### Construcción manual de la imagen Docker
 ```text
 docker build -f BibliotecaMangas.Backend/Dockerfile -t bibliotecamangas-backend:tp1 .
 ```
-[ImagenDocker](docs/evidencias/Docker%20Build.png)
+![ImagenDocker](docs/evidencias/Docker-Build.png)
 
 ### Construcción y ejecución con Docker Compose
 ```text
 docker compose up --build
 ```
-[dockerCompose](docs/evidencias/Ejecución%20con%20Docker%20Compose.png)
+![dockerCompose](docs/evidencias/Ejecucion-con-Docker-Compose.png)
 
 ### Contenedores en ejecución
-[contenedores](docs/evidencias/contenedores%20en%20ejecucion.png)
+![contenedores](docs/evidencias/contenedores-en-ejecucion.png)
 
 ### Swagger disponible
-[swagger](docs/evidencias/Swagger.jpg)
+![swagger](docs/evidencias/Swagger.jpg)
 
 ### Endpoint devolviendo datos
 ```text
 GET /api/Obras/getAllObras
 ```
-[endpoint](docs/evidencias/endpoint%20devolviendo%20datos.jpg)
+![endpoint](docs/evidencias/endpoint-devolviendo-datos.jpg)
 
 ---
 
@@ -299,14 +300,14 @@ Algunos comandos utilizados durante el desarrollo fueron:
 git init
 git add .
 git commit -m "Estado estable inicial"
-git commit -m "Completar endpoint de la API"
+git commit -m "Completar endpoints de la API"
 git commit -m "Agregar Docker Compose y base MySQL inicial"
 git commit -m "Actualizar README con evidencias"
 ```
 
 Publicación en GitHub:
 ```text
-git remote add origin https//github.com/AdriGimenez/BibliotecaMangas.git
+git remote add origin https://github.com/AdriGimenez/BibliotecaMangas.git
 git push origin main
 ```
 
@@ -319,7 +320,7 @@ Este proyecto incluye:
 * Código fuente completo.
 * Dockerfile funcional.
 * README documentado.
-* Archivo ```docker-compose.yml```
+* Archivo ```docker-compose.yml```.
 * Script SQL inicial para crear y cargar la base de datos.
 * Imagen Docker construida correctamente.
 * Contenedor del backend ejecutado correctamente.
@@ -331,7 +332,7 @@ Este proyecto incluye:
 
 ## Desarrollo local opcional
 
-La forma recomendada para ejecuta rel proyecto completo es usando Docker Compose.
+La forma recomendada para ejecutar el proyecto completo es usando Docker Compose.
 
 Si se desea trabajar localmente sin Docker Compose, se puede usar la CLI de ```dotnet```.
 
