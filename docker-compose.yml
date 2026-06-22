@@ -1,0 +1,33 @@
+﻿services:
+  mysql:
+    image: mysql:8.0
+    container_name: bibliotecamangas-mysql-tp
+    environment:
+      MYSQL_ROOT_PASSWORD: biblioteca123
+      MYSQL_DATABASE: BibliotecaMangas
+    volumes:
+      - bibliotecamangas_mysql_data:/var/lib/mysql
+      - ./mysql-init:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pbiblioteca123"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: BibliotecaMangas.Backend/Dockerfile
+    container_name: bibliotecamangas-backend-tp
+    depends_on:
+      mysql:
+        condition: service_healthy
+    ports:
+      - "8088:8080"
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__CONNECTIONSTRING: "Server=mysql;Port=3306;Database=BibliotecaMangas;User=root;Password=biblioteca123;TreatTinyAsBoolean=True"
+
+volumes:
+  bibliotecamangas_mysql_data:
